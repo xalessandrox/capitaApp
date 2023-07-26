@@ -1,1 +1,89 @@
-/* You can add global styles to this file, and also import other style files */
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i');
+@import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css');
+
+:root {
+  --color-1: hsl(102, 19%, 61%);
+  --color-2: hsl(75, 31%, 25%);
+  --color-3: hsla(104, 17%, 68%);
+
+}
+
+body {
+  background: var(--color-1) !important;
+  font-family: Bahnschrift, serif !important;
+  font-size: 16px;
+}
+
+input {
+  background-color: var(--color-3) !important;
+}
+
+.btn {
+  background: var(--color-2) !important;
+  width: 100%;
+  /*transition: all 5s;*/
+}
+
+.btn:hover {
+  background: var(--color-1) !important;
+  /*transition: all 5s;*/
+}
+
+form {
+  background-color: var(--color-3);
+  padding: 25px;
+}
+
+.card {
+  background-color: var(--color-1) !important;
+}
+
+form {
+
+  border-radius: 5px !important;
+}
+
+.btn {
+  border: 0;
+  box-shadow: 0px 0px 1px 0.01ch navajowhite;
+}
+
+.disabled {
+  pointer-events:none;
+  opacity:0.6;
+}
+
+.pointer {
+  cursor: pointer;
+}
+/*---- User icon sizes ---*/
+
+.user-avatar-xxl {
+  height: 128px;
+  width: 128px;
+}
+
+.user-avatar-xl {
+  height: 90px;
+  width: 90px;
+}
+
+.user-avatar-lg {
+  height: 48px;
+  width: 48px;
+}
+
+.user-avatar-md {
+  height: 32px;
+  width: 32px;
+}
+
+.user-avatar-sm {
+  height: 24px;
+  width: 24px;
+}
+
+.user-avatar-xs {
+  height: 18px;
+  width: 18px;
+}
