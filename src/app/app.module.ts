@@ -16,6 +16,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { CustomersComponent } from './components/customers/customers.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { StatsComponent } from './components/stats/stats.component';
+import { NgOptimizedImage } from "@angular/common";
 
 @NgModule( {
   declarations : [
@@ -35,7 +36,8 @@ import { StatsComponent } from './components/stats/stats.component';
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
-    FormsModule
+    FormsModule,
+    NgOptimizedImage
   ],
   providers : [],
   bootstrap : [ AppComponent ]

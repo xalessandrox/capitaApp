@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, of, startWith } from "rxjs";
-import { CustomHttpResponse, LoginState, Profile } from "../../interfaces/appStates";
-import { Router } from "@angular/router";
+import { CustomHttpResponse, Profile } from "../../interfaces/appStates";
 import { UserService } from "../../services/user.service";
-import { Key } from "../../enums/key.enum";
 import { DataState } from "../../enums/dataState.enum";
 import { AppState } from "../../interfaces/appState";
 import { NgForm } from "@angular/forms";
@@ -18,7 +16,8 @@ export class ProfileComponent implements OnInit {
   profileState$: Observable<AppState<CustomHttpResponse<Profile>>> = of( { dataState : DataState.Loaded } );
   readonly DataState = DataState;
   private dataSubject = new BehaviorSubject<CustomHttpResponse<Profile>>( null );
-  isLoading$;
+  private isLoadingSubject = new BehaviorSubject<boolean>( false );
+  isLoading$ = this.isLoadingSubject.asObservable();
 
   constructor( private userService: UserService ) {
   }
@@ -31,7 +30,7 @@ export class ProfileComponent implements OnInit {
         this.dataSubject.next( response );
         return {
           dataState : DataState.Loaded,
-          appData: response
+          appData : response
         };
       } ),
       startWith( {
@@ -40,7 +39,7 @@ export class ProfileComponent implements OnInit {
       catchError( ( error: string ) => {
         return of( {
           dataState : DataState.Error,
-          appData: this.dataSubject.value,
+          appData : this.dataSubject.value,
           error
         } )
       } )
@@ -48,8 +47,31 @@ export class ProfileComponent implements OnInit {
 
   }
 
-  updateProfile(profileForm: NgForm){
-
+  updateProfile( profileForm: NgForm ) {
+    this.isLoadingSubject.next( true );
+    this.profileState$ = this.userService.update$( profileForm.value )
+    .pipe(
+      map( response => {
+        this.dataSubject.next( { ...response, data : response.data } );
+        this.isLoadingSubject.next( false );
+        return {
+          dataState : DataState.Loaded,
+          appData : this.dataSubject.value
+        };
+      } ),
+      startWith( {
+        dataState : DataState.Loaded,
+        appData : this.dataSubject.value
+      } ),
+      catchError( ( error: string ) => {
+        this.isLoadingSubject.next( false );
+        return of( {
+          dataState : DataState.Loaded,
+          appData : this.dataSubject.value,
+          error
+        } )
+      } )
+    )
   }
 
 }

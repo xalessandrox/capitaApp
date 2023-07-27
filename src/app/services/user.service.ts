@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
-import { catchError, Observable, tap, throwError } from "rxjs";
+import { catchError, Observable, of, tap, throwError } from "rxjs";
 import { CustomHttpResponse, Profile } from "../interfaces/appStates";
+import { User } from "../interfaces/user";
 
 @Injectable( {
   providedIn : 'root'
@@ -33,27 +34,38 @@ export class UserService {
     this.httpClient.get<CustomHttpResponse<Profile>>
     ( `${ this.server }/user/profile` ,
       {
-        headers: new HttpHeaders().set('Authorization', 'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpdGllcyI6WyJSRUFEOlVTRVIiLCJSRUFEOkNVU1RPTUVSIl0sImlzcyI6IlNBTkRST19ERVYiLCJhdWQiOiJDVVNUT01FUl9NQU5BR0VNRU5UX1NFUlZJQ0UiLCJpYXQiOjE2OTAzOTUwNjMsInN1YiI6ImZvcm1pY2FsZUBob3RtYWlsLmNvbSIsImV4cCI6MTY5MDM5Njg2M30.1DRwbFeOm-okhvppIWcd4m7OeFnUFS6KRLrXGvt6flzNctgndyukOOJwmzBc6_3WV4sCSk_nqqoXY862soqLSg')
+        headers: new HttpHeaders().set('Authorization', 'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTQU5EUk9fREVWIiwiaWF0IjoxNjkwNDUzMTMyLCJzdWIiOiI1IiwiYXVkIjoiQ1VTVE9NRVJfTUFOQUdFTUVOVF9TRVJWSUNFIiwiZXhwIjoxNjkwNTM5NTMyLCJhdXRob3JpdGllcyI6WyJSRUFEOlVTRVIiLCJSRUFEOkNVU1RPTUVSIl19.g4uj3CtnsBwil50d1e4Co9LIzGiUoqILH5QJo0A8ogdsUsTIC0ZvigMXAjTgNqQ8yuNIt5F8Ct7_0cMV7JSLkw')
       })
     .pipe(
       tap( console.log ),
       catchError( this.handleError )
     );
 
+  update$ = (user: User) => <Observable<CustomHttpResponse<Profile>>>
+    this.httpClient.patch<CustomHttpResponse<Profile>>
+    ( `${ this.server }/user/update` ,
+      user,
+      {
+        headers: new HttpHeaders().set('Authorization', 'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTQU5EUk9fREVWIiwiaWF0IjoxNjkwNDUzMTMyLCJzdWIiOiI1IiwiYXVkIjoiQ1VTVE9NRVJfTUFOQUdFTUVOVF9TRVJWSUNFIiwiZXhwIjoxNjkwNTM5NTMyLCJhdXRob3JpdGllcyI6WyJSRUFEOlVTRVIiLCJSRUFEOkNVU1RPTUVSIl19.g4uj3CtnsBwil50d1e4Co9LIzGiUoqILH5QJo0A8ogdsUsTIC0ZvigMXAjTgNqQ8yuNIt5F8Ct7_0cMV7JSLkw')
+      })
+    .pipe(
+      tap( console.log ),
+      catchError( this.handleError)
+    );
 
-
-  private handleError( response: HttpErrorResponse ): Observable<never> {
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    console.log(error);
     let errorMessage: string;
-    if (response.error instanceof ErrorEvent) {
-      errorMessage = `A client error occurred - ${ response.error.message }`;
+    if (error.error instanceof ErrorEvent) {
+      errorMessage = `A client error occurred - ${error.error.message}`;
     } else {
-      if (response.error.reason) {
-        errorMessage = `${ response.error.reason }`;
+      if (error.error.reason) {
+        errorMessage = error.error.reason;
+        console.log(errorMessage);
       } else {
-        errorMessage = `Status ${ response.status } error`;
-        console.log( response );
+        errorMessage = `An error occurred - Error status ${error.status}`;
       }
     }
-    return throwError( () => errorMessage );
+    return throwError(() => errorMessage);
   }
 }
