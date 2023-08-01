@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpErrorResponse, HttpHeaders } from "@angular/common/http";
-import { catchError, Observable, of, tap, throwError } from "rxjs";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { catchError, Observable, tap, throwError } from "rxjs";
 import { CustomHttpResponse, Profile } from "../interfaces/appStates";
 import { User } from "../interfaces/user";
+import { Key } from "../enums/key.enum";
 
 @Injectable( {
   providedIn : 'root'
@@ -32,40 +33,77 @@ export class UserService {
 
   profile$ = () => <Observable<CustomHttpResponse<Profile>>>
     this.httpClient.get<CustomHttpResponse<Profile>>
-    ( `${ this.server }/user/profile` ,
-      {
-        headers: new HttpHeaders().set('Authorization', 'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTQU5EUk9fREVWIiwiaWF0IjoxNjkwNDUzMTMyLCJzdWIiOiI1IiwiYXVkIjoiQ1VTVE9NRVJfTUFOQUdFTUVOVF9TRVJWSUNFIiwiZXhwIjoxNjkwNTM5NTMyLCJhdXRob3JpdGllcyI6WyJSRUFEOlVTRVIiLCJSRUFEOkNVU1RPTUVSIl19.g4uj3CtnsBwil50d1e4Co9LIzGiUoqILH5QJo0A8ogdsUsTIC0ZvigMXAjTgNqQ8yuNIt5F8Ct7_0cMV7JSLkw')
-      })
+    ( `${ this.server }/user/profile` )
     .pipe(
       tap( console.log ),
       catchError( this.handleError )
     );
 
-  update$ = (user: User) => <Observable<CustomHttpResponse<Profile>>>
+  update$ = ( user: User ) => <Observable<CustomHttpResponse<Profile>>>
     this.httpClient.patch<CustomHttpResponse<Profile>>
-    ( `${ this.server }/user/update` ,
-      user,
-      {
-        headers: new HttpHeaders().set('Authorization', 'Bearer eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJTQU5EUk9fREVWIiwiaWF0IjoxNjkwNDUzMTMyLCJzdWIiOiI1IiwiYXVkIjoiQ1VTVE9NRVJfTUFOQUdFTUVOVF9TRVJWSUNFIiwiZXhwIjoxNjkwNTM5NTMyLCJhdXRob3JpdGllcyI6WyJSRUFEOlVTRVIiLCJSRUFEOkNVU1RPTUVSIl19.g4uj3CtnsBwil50d1e4Co9LIzGiUoqILH5QJo0A8ogdsUsTIC0ZvigMXAjTgNqQ8yuNIt5F8Ct7_0cMV7JSLkw')
-      })
+    ( `${ this.server }/user/update`, user )
     .pipe(
       tap( console.log ),
-      catchError( this.handleError)
+      catchError( this.handleError )
     );
 
-  private handleError(error: HttpErrorResponse): Observable<never> {
-    console.log(error);
+  refreshToken$ = () => <Observable<CustomHttpResponse<Profile>>>
+    this.httpClient.get<CustomHttpResponse<Profile>>
+    ( `${ this.server }/user/refresh/token`, {
+      headers : { Authorization : `Bearer ${ localStorage.getItem( Key.RefreshToken ) }` }
+    } )
+    .pipe(
+      tap( response => {
+        localStorage.removeItem( Key.Token )
+        localStorage.removeItem( Key.RefreshToken )
+        localStorage.setItem( Key.Token, response.data.access_token )
+        localStorage.setItem( Key.RefreshToken, response.data.refresh_token )
+        console.log( response );
+      } ),
+      catchError( this.handleError )
+    );
+
+  updatePassword$ = ( form: {
+    currentPassword: string,
+    newPassword: string,
+    confirmNewPassword: string
+  } ) => <Observable<CustomHttpResponse<Profile>>>
+    this.httpClient.patch<CustomHttpResponse<Profile>>
+    ( `${ this.server }/user/update/password`, form )
+    .pipe(
+      tap( console.log ),
+      catchError( this.handleError )
+    );
+
+  updateRole$ = ( roleName: string ) => <Observable<CustomHttpResponse<Profile>>>
+    this.httpClient.patch<CustomHttpResponse<Profile>>
+    ( `${ this.server }/user/update/role/${roleName}`, {})
+    .pipe(
+      tap( console.log ),
+      catchError( this.handleError )
+    );
+
+  updateAccountSettings$ = ( settingsForm: {enabled:boolean, notLocked:boolean} ) => <Observable<CustomHttpResponse<Profile>>>
+    this.httpClient.patch<CustomHttpResponse<Profile>>
+    ( `${ this.server }/user/update/settings`, settingsForm)
+    .pipe(
+      tap( console.log ),
+      catchError( this.handleError )
+    );
+
+  private handleError( error: HttpErrorResponse ): Observable<never> {
+    console.log( error );
     let errorMessage: string;
     if (error.error instanceof ErrorEvent) {
-      errorMessage = `A client error occurred - ${error.error.message}`;
+      errorMessage = `A client error occurred - ${ error.error.message }`;
     } else {
       if (error.error.reason) {
         errorMessage = error.error.reason;
-        console.log(errorMessage);
+        console.log( errorMessage );
       } else {
-        errorMessage = `An error occurred - Error status ${error.status}`;
+        errorMessage = `An error occurred - Error status ${ error.status }`;
       }
     }
-    return throwError(() => errorMessage);
+    return throwError( () => errorMessage );
   }
 }

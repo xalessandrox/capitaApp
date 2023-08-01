@@ -15,7 +15,7 @@ body {
 }
 
 input {
-  background-color: var(--color-3) !important;
+  /*background-color: var(--color-1) !important;*/
 }
 
 .btn {
@@ -41,6 +41,16 @@ form {
 form {
 
   border-radius: 5px !important;
+}
+
+.profile-tab-nav {
+  background-image: linear-gradient(to left, white, navajowhite);
+}
+.icon-img {
+  background-image: linear-gradient(to left, red, blue, green, blue,red);
+}
+.tab-content {
+  background-image: linear-gradient(to bottom, teal, seagreen);
 }
 
 .btn {
@@ -87,3 +97,4 @@ form {
   height: 18px;
   width: 18px;
 }
+

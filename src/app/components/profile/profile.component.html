@@ -6,23 +6,25 @@
       <div class="container">
         <!-- ***        BREADCRUMB    *** -->
         <nav aria-label="breadcrumb" style="margin-top: 8px;">
-            <ol class="breadcrumb">
-              <li class="breadcrumb-item">
-                <a [routerLink]="['/']">Home</a>
-              </li>
-              <li class="breadcrumb-item active"> Users</li>
-              <li class="breadcrumb-item active"
-                  aria-current="page">{{ state?.appData?.data?.user?.firstName }} {{ state?.appData?.data?.user?.lastName }}</li>
-              <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
-            <span style="font-style: italic">Role:&nbsp;</span> {{ state?.appData?.data?.user?.roleName.substring(state?.appData?.data?.user?.roleName.indexOf('_') + 1) }}
-            </ol>
+          <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+              <a [routerLink]="['/']">Home</a>
+            </li>
+            <li class="breadcrumb-item active"> Users</li>
+            <li class="breadcrumb-item active"
+                aria-current="page">{{ state?.appData?.data?.user?.firstName }} {{ state?.appData?.data?.user?.lastName }}</li>
+            <li>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+            <span style="font-family: 'Harlow Solid Italic',serif">Role:&nbsp;</span>
+            <span style="font-family: 'Segoe UI Semibold',serif"
+                  [style]="{color: roleName?.color } "> {{ roleName?.title }} </span>
+          </ol>
 
         </nav>
 
         <div class="bg-white shadow rounded-lg d-block d-sm-flex" style="border-radius: 8px;">
 
           <div class="profile-tab-nav border-right">
-            <div class="p-4">
+            <div class="p-4 icon-img">
               <div class="img-circle text-center mb-3">
                          <span style="position: relative">
                             <img [src]="state?.appData?.data?.user?.imageUrl" alt="John" class="shadow"/>
@@ -138,13 +140,13 @@
             <div class="tab-pane fade" id="password-tab" role="tabpanel" aria-labelledby="password"
                  style="min-height: 510px;">
               <h3 class="mb-4">Password Settings</h3>
-              <form>
-                <input type="hidden" name="userId">
+              <form #updatePasswordForm="ngForm" (ngSubmit)="updatePassword(updatePasswordForm)">
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Current password</label>
-                      <input type="password" name="currentPassword" class="form-control" required>
+                      <input type="password" name="currentPassword" class="form-control" minlength="1" required
+                             ngModel [disabled]="(isLoading$ | async)">
                     </div>
                   </div>
                 </div>
@@ -152,72 +154,88 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>New password</label>
-                      <input type="password" name="newPassword" class="form-control" minlength="5" required>
+                      <input type="password" name="newPassword" class="form-control" minlength="3" required
+                             ngModel [disabled]="(isLoading$ | async)">
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label>Confirm new password</label>
-                      <input type="password" name="confirmPassword" class="form-control" minlength="5" required>
+                      <input type="password" name="confirmNewPassword" class="form-control" minlength="3" required
+                             ngModel [disabled]="(isLoading$ | async)">
                     </div>
                   </div>
                 </div>
                 <div>
-                  <button type="submit" class="btn btn-primary">
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
-                          style="margin-right: 5px;"></span>
-                    <span>Loading...</span>
-                    <span>Update</span>
+                  <button [disabled]="(isLoading$ | async) || updatePasswordForm.invalid"
+                          type="submit" class="btn btn-primary">
+                    <span *ngIf="isLoading$ | async" class="spinner-border spinner-border-sm" role="status"
+                          aria-hidden="true" style="margin-right: 5px;"></span>
+                    <span *ngIf="isLoading$ | async"> Saving changes...</span>
+                    <span *ngIf="!(isLoading$ | async)">Update</span>
                   </button>
                 </div>
               </form>
             </div>
+            <!--             /// AUTHORIZATION SETTINGS \\\ -->
             <div class="tab-pane fade" id="security-tab" role="tabpanel" aria-labelledby="security"
                  style="min-height: 510px;">
               <h3 class="mb-4">Authorization Settings</h3>
-              <form>
+              <form #updateRoleForm="ngForm" (ngSubmit)="updateRole(updateRoleForm)">
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
                       <label style="margin-bottom: 5px;">Role Name</label>
-                      <select name="roleName" class="form-control select-cl" required>
-                        <option class="select-cl">ROLE_ADMIN</option>
+                      <select name="roleName" class="form-control select-cl" required
+                              [disabled]="(isLoading$ | async) || state?.appData?.data?.user?.roleName === 'ROLE_USER' || state?.appData?.data?.user?.roleName === 'ROLE_MANAGER'"
+                              [ngModel]="state?.appData?.data?.user?.roleName">
+                        <option class="select-cl" *ngFor="let role of state?.appData?.data?.roles"
+                                [selected]="state?.appData?.data?.user?.roleName"
+                                [ngValue]="role.name">{{ role.name }}
+                        </option>
                       </select>
                     </div>
                   </div>
                   <div class="col-md-6">
                     <div class="form-group">
                       <label style="margin-bottom: 5px;">Role Permissions</label>
-                      <input type="text" class="form-control" style="margin-bottom: 5px;">
+                      <input type="text" class="form-control" style="margin-bottom: 5px;"
+                             [disabled]="true"
+                             *ngFor="let permission of state?.appData?.data?.user?.permissions?.split(',')"
+                             [value]="permission">
                     </div>
                   </div>
                 </div>
                 <div>
-                  <button type="submit" class="btn btn-primary">
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                  <button
+                    *ngIf="state?.appData?.data?.user?.roleName === 'ROLE_SYSADMIN' || state?.appData?.data?.user?.roleName === 'ROLE_ADMIN'"
+                    [disabled]="(isLoading$ | async)"
+                    type="submit" class="btn btn-primary">
+                    <span *ngIf="isLoading$ | async" class="spinner-border spinner-border-sm" role="status"
+                          aria-hidden="true"
                           style="margin-right: 5px;"></span>
-                    <span>Loading...</span>
-                    <span>Update</span>
+                    <span *ngIf="isLoading$ | async">Loading...</span>
+                    <span *ngIf="!(isLoading$ | async)">Save Authority</span>
                   </button>
                 </div>
               </form>
             </div>
             <div class="tab-pane fade" id="application-tab" role="tabpanel" aria-labelledby="application"
                  style="min-height: 510px;">
-              <h3 class="mb-4">Application Settings</h3>
-              <form>
+              <h3 class="mb-4">Account Settings</h3>
+              <form #updateSettingsForm="ngForm" (ngSubmit)="updateAccountSettings(updateSettingsForm)">
                 <input type="hidden" name="userId">
                 <div class="row">
                   <div class="col-md-6">
                     <div class="form-group">
                       <div class="form-check">
-                        <input type="checkbox" name="enabled" class="form-check-input">
+                        <input type="checkbox" name="enabled" class="form-check-input" [ngModel]="state?.appData?.data?.user?.enabled">
                         <label class="form-check-label" for="enabled">
                           Account Active
                         </label>
                       </div>
                       <div class="form-check">
-                        <input type="checkbox" name="notLocked" class="form-check-input">
+                        <input type="checkbox" name="notLocked" class="form-check-input" [ngModel]="state?.appData?.data?.user?.notLocked">
                         <label class="form-check-label" for="notLocked">
                           Account Unlocked
                         </label>
@@ -226,15 +244,20 @@
                   </div>
                 </div>
                 <div>
-                  <button type="submit" class="btn btn-primary">
-                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                  <button
+                    *ngIf="state?.appData?.data?.user?.roleName === 'ROLE_SYSADMIN' || state?.appData?.data?.user?.roleName === 'ROLE_ADMIN'"
+                    [disabled]="(isLoading$ | async)"
+                    type="submit" class="btn btn-primary">
+                    <span *ngIf="isLoading$ | async" class="spinner-border spinner-border-sm" role="status"
+                          aria-hidden="true"
                           style="margin-right: 5px;"></span>
-                    <span>Loading...</span>
-                    <span>Update</span>
+                    <span *ngIf="isLoading$ | async">Loading...</span>
+                    <span *ngIf="!(isLoading$ | async)">Save Account Settings</span>
                   </button>
                 </div>
               </form>
             </div>
+
             <div class="tab-pane fade" id="notification-tab" role="tabpanel" aria-labelledby="notification"
                  style="min-height: 510px;">
               <h3 class="mb-4">Authentication Settings</h3>
