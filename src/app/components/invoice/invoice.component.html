@@ -1,0 +1,161 @@
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.1/css/all.min.css"
+      integrity="sha256-2XFplPlrFClt0bIdPgpz8H7ojnk10H69xRqd9+uTShA="
+      crossorigin="anonymous"/>
+
+<ng-container *ngIf="(invoiceState$ | async) as state" [ngSwitch]="state.dataState">
+	<ng-container *ngSwitchCase="DataState.Loaded">
+		<app-navbar [user]="state?.appData?.data?.user" class="d-print-none"></app-navbar>
+		<section>
+			<div class="container">
+				<nav aria-label="breadcrumb" style="margin-top: 8px" class="d-print-none">
+					<ol class="breadcrumb">
+						<li class="breadcrumb-item"><a [routerLink]="['/']">Home</a></li>
+						<li class="breadcrumb-item"><a [routerLink]="['/invoices']">Invoices</a></li>
+						<li class="breadcrumb-item active" aria-current="page">{{state?.appData?.data?.invoice.invoiceNumber}}</li>
+					</ol>
+				</nav>
+
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="card">
+							<div class="card-body">
+								<div class="invoice-title">
+									<h4 class="float-end font-size-15"><span
+											class="badge font-size-12 ms-2"
+                      [ngClass]="[
+                                    state?.appData?.data?.invoice.status === 'PAID' ? ' bg-success' : '',
+                                    state?.appData?.data?.invoice.status === 'PENDING' ? ' bg-warning' : '',
+                                    state?.appData?.data?.invoice.status === 'CANCELED' ? ' bg-info' : '',]">
+
+                  {{state?.appData?.data?.invoice?.status}}</span></h4>
+									<div class="mb-4">
+										<h2 class="mb-1 text-muted">Bootdey.com</h2>
+									</div>
+									<div class="text-muted">
+										<p class="mb-1"><i class="fa fa-fw fa-xs fa-globe me-1" aria-hidden="true"></i>www.formicola.it
+										</p>
+										<p class="mb-1"><i class="fa fa-fw fa-xs fa-envelope me-1"
+										                   aria-hidden="true"></i>chiedi@sandro.it</p>
+										<p class="mb-1"><i class="fa fa-fw fa-xs fa-map-marker" aria-hidden="true"></i>
+											3184 Spruce Drive
+											Pittsburgh, PA 15201</p>
+										<p class="mb-1"><i class="fa fa-fw fa-xs fa-phone-volume me-1"
+										                   aria-hidden="true"></i>012-345-6789</p>
+									</div>
+								</div>
+
+								<hr class="my-3">
+
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="text-muted">
+											<h5 class="font-size-16 mb-3">Billed To:</h5>
+											<h5 class="font-size-15 mb-2">
+                        {{ state?.appData?.data?.customer?.firstName + " " + state?.appData?.data?.customer?.lastName }}
+                      </h5>
+											<p class="mb-1">{{ state?.appData?.data?.customer?.address }}</p>
+											<p class="mb-1">{{ state?.appData?.data?.customer?.phone }}</p>
+											<p class="mb-1">{{ state?.appData?.data?.customer?.email }}</p>
+										</div>
+									</div>
+									<!-- end col -->
+									<div class="col-sm-6">
+										<div class="text-muted text-sm-end">
+											<div>
+												<h5 class="font-size-15 mb-1">Invoice No:</h5>
+												<p>{{state?.appData?.data?.invoice?.invoiceNumber}} </p>
+											</div>
+											<div class="mt-4">
+												<h5 class="font-size-15 mb-1">Invoice Date:</h5>
+												<p> {{state?.appData?.data?.invoice?.createdAt | date:'d.M.y'}} </p>
+											</div>
+										</div>
+									</div>
+									<!-- end col -->
+								</div>
+								<!-- end row -->
+
+								<div class="py-2 row">
+									<h5 class="font-size-15">Order Summary</h5>
+
+									<div class="table-responsive">
+										<table class="table align-middle table-nowrap table-centered mb-0">
+											<thead class="table-dark">
+											<tr>
+												<th style="width: 70px;">No.</th>
+												<th>Service</th>
+												<th>Price</th>
+												<th class="text-end">Q.ty/Hr</th>
+												<th class="text-end" style="width: 120px;">Total</th>
+											</tr>
+											</thead><!-- end thead -->
+											<tbody>
+
+											<tr *ngFor="let service of state?.appData?.data?.invoice.services.split(','); let i = index">
+												<th scope="row">{{ i + 1 }}</th>
+												<td>
+													<div>
+														<p class="text-truncate font-size-14 mb-1">{{ service }}</p>
+<!-- 														<p class="text-muted mb-0">Watch, Black</p> -->
+													</div>
+												</td>
+												<td>$ 245.50</td>
+												<td class="text-end">1</td>
+												<td class="text-end">$ 245.50</td>
+											</tr>
+											<!-- end tr -->
+
+											<tr class="invoice-price-subtotal">
+												<th scope="row" colspan="4" class="text-end">Sub Total</th>
+												<td class="text-end">$732.50</td>
+											</tr>
+											<!-- end tr -->
+											<tr>
+												<th scope="row" colspan="4" class="border-0 text-end">
+													Discount :
+												</th>
+												<td class="border-0 text-end">- $25.50</td>
+											</tr>
+											<!-- end tr -->
+											<tr>
+												<th scope="row" colspan="4" class="border-0 text-end">
+													Shipping Charge :
+												</th>
+												<td class="border-0 text-end">$20.00</td>
+											</tr>
+											<!-- end tr -->
+											<tr>
+												<th scope="row" colspan="4" class="border-0 text-end">
+													Tax
+												</th>
+												<td class="border-0 text-end">$12.00</td>
+											</tr>
+											<!-- end tr -->
+											<tr class="invoice-price-total">
+												<th scope="row" colspan="4" class=" text-end ">Total</th>
+												<td class="text-end">{{ state?.appData?.data?.invoice.total }}</td>
+											</tr>
+											<!-- end tr -->
+											</tbody><!-- end tbody -->
+										</table><!-- end table -->
+									</div><!-- end table responsive -->
+									<div class="d-print-none mt-4 mx-2 row">
+										<div class="col-lg-10"></div>
+										<div class="col-lg-1 m-0 pull-right">
+											<a role="button" href="javascript:window.print()" class="btn btn-success">Print&nbsp;<i
+													class="fa fa-print"></i></a>
+										</div>
+										<div class="col-lg-1 m-0 float-end">
+											<a href="#" class="btn btn-primary">Send&nbsp;<i class="fa fa-envelope"></i></a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div><!-- end col -->
+				</div>
+			</div>
+		</section>
+	</ng-container>
+</ng-container>

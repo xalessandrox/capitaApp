@@ -32,7 +32,7 @@ export class TokenInterceptor implements HttpInterceptor {
       || request.url.includes( 'resetPassword' )) {
       return next.handle( request );
     }
-    return next.handle( this.addAuthorizationTokenHeader( request, localStorage.getItem( Key.Token ) ) )
+    return next.handle( this.addAuthorizationTokenHeader( request, localStorage.getItem( Key.AccessToken ) ) )
     .pipe(
       catchError( ( response: HttpErrorResponse ) => {
         if (response instanceof HttpErrorResponse && response.status == 401 && response.error.reason.includes( 'expired' )) {

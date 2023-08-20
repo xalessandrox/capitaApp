@@ -1,4 +1,4 @@
 export enum Key {
-  Token = '[KEY] TOKEN',
+  AccessToken = '[KEY] TOKEN',
   RefreshToken = '[KEY] REFRESH_TOKEN'
 }

@@ -1,6 +1,6 @@
 <ng-container *ngIf="(profileState$ | async) as state; else loading">
   <ng-container>
-    <app-navbar></app-navbar>
+    <app-navbar [user]="state?.appData?.data?.user"></app-navbar>
     <!-- <div>{{ state | json }} </div> -->
     <section>
       <div class="container">
@@ -29,7 +29,7 @@
                          <span style="position: relative">
                             <img [src]="state?.appData?.data?.user?.imageUrl" alt="John" class="shadow"/>
                            <!--                             <img src="https://img.freepik.com/free-icon/user_318-159711.jpg" alt="John" class="shadow"/> -->
-                         <i class="bi bi-camera-fill right-position"></i>
+                         <i (click)="fileInput.click()" class="bi bi-camera-fill right-position"></i>
                          </span>
               </div>
               <h4
@@ -137,6 +137,8 @@
                 </div>
               </form>
             </div>
+
+            <!--             /// PASSWORD SETTINGS \\\ -->
             <div class="tab-pane fade" id="password-tab" role="tabpanel" aria-labelledby="password"
                  style="min-height: 510px;">
               <h3 class="mb-4">Password Settings</h3>
@@ -177,7 +179,8 @@
                 </div>
               </form>
             </div>
-            <!--             /// AUTHORIZATION SETTINGS \\\ -->
+
+            <!--             /// AUTHORIZATION SETTINGS \\\       -->
             <div class="tab-pane fade" id="security-tab" role="tabpanel" aria-labelledby="security"
                  style="min-height: 510px;">
               <h3 class="mb-4">Authorization Settings</h3>
@@ -220,6 +223,8 @@
                 </div>
               </form>
             </div>
+
+            <!--             /// ACCOUNT SETTINGS \\\        -->
             <div class="tab-pane fade" id="application-tab" role="tabpanel" aria-labelledby="application"
                  style="min-height: 510px;">
               <h3 class="mb-4">Account Settings</h3>
@@ -229,13 +234,18 @@
                   <div class="col-md-6">
                     <div class="form-group">
                       <div class="form-check">
-                        <input type="checkbox" name="enabled" class="form-check-input" [ngModel]="state?.appData?.data?.user?.enabled">
+
+                        <input type="checkbox" name="enabled" class="form-check-input"
+                               [ngModel]="state?.appData?.data?.user?.enabled"
+                               [disabled]="(isLoading$ | async) || state?.appData?.data?.user?.roleName === 'ROLE_USER' || state?.appData?.data?.user?.roleName === 'ROLE_MANAGER'">
                         <label class="form-check-label" for="enabled">
                           Account Active
                         </label>
                       </div>
                       <div class="form-check">
-                        <input type="checkbox" name="notLocked" class="form-check-input" [ngModel]="state?.appData?.data?.user?.notLocked">
+                        <input type="checkbox" name="notLocked" class="form-check-input"
+                               [ngModel]="state?.appData?.data?.user?.notLocked"
+                               [disabled]="(isLoading$ | async) || state?.appData?.data?.user?.roleName === 'ROLE_USER' || state?.appData?.data?.user?.roleName === 'ROLE_MANAGER'">
                         <label class="form-check-label" for="notLocked">
                           Account Unlocked
                         </label>
@@ -258,6 +268,7 @@
               </form>
             </div>
 
+            <!--             /// AUTHENTICATION SETTINGS \\\        -->
             <div class="tab-pane fade" id="notification-tab" role="tabpanel" aria-labelledby="notification"
                  style="min-height: 510px;">
               <h3 class="mb-4">Authentication Settings</h3>
@@ -267,14 +278,18 @@
                   <div class="row align-items-center">
                     <div class="col">
                       <strong class="mb-2">Multi-Factor Authentication</strong>
-                      <span class="badge bg-success mx-3">Enabled</span>
-                      <span class="badge bg-warning mx-3">Disabled</span>
+                      <span *ngIf="state?.appData?.data?.user?.usingMfa" class="badge bg-success mx-3">Enabled</span>
+                      <span *ngIf="!state?.appData?.data?.user?.usingMfa" class="badge bg-warning mx-3">Disabled</span>
                       <p class="text-muted mb-0">Set up Multi-factor Authentication (MFA) help keep your account more
                         secure</p>
                     </div>
                     <div class="col-auto">
-                      <button class="btn btn-primary btn-sm">Disable
-                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"
+                      <button class="btn btn-primary btn-sm"
+                              *ngIf="!(state?.appData?.data?.user?.roleName == 'ROLE_USER')"
+                              [disabled]="(isLoading$ | async)"
+                              (click)="updateUsingMfa()">{{state?.appData?.data?.user?.usingMfa ? 'Disable' : 'Enable'}}
+                        <span *ngIf="isLoading$ | async" class="spinner-border spinner-border-sm" role="status"
+                              aria-hidden="true"
                               style="margin-right: 5px;"></span>
                       </button>
                     </div>
@@ -284,11 +299,11 @@
                   <div class="row align-items-center">
                     <div class="col">
                       <strong class="mb-2">Activity Logs</strong>
-                      <p class="text-muted mb-0">Show the latst activites on your account</p>
+                      <p class="text-muted mb-0">Show the latest activities on your account</p>
                     </div>
                     <div class="col-auto">
                       <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="activityLog">
+                        <input (change)="toggleLogs()" type="checkbox" class="custom-control-input" id="activityLog">
                         <span class="custom-control-label"></span>
                       </div>
                     </div>
@@ -298,7 +313,9 @@
             </div>
           </div>
         </div>
-        <div class="row">
+
+        <!--         /// EVENTS \\\       -->
+        <div *ngIf="(showLogs$ | async)" class="row">
           <div class="col-xl-12 mt-4">
             <div class="card" style="border-radius: 8px;">
               <div class="card-body">
@@ -316,16 +333,16 @@
                   </tr>
                   </thead>
                   <tbody>
-                  <tr>
-                    <td>Chrome</td>
-                    <td>192.168.1.209</td>
-                    <td>01-15-2023 5:25:20</td>
+                  <tr *ngFor="let e of state?.appData?.data?.events">
+                    <td>{{e.device}}</td>
+                    <td>{{e.ipAddress}}</td>
+                    <td>{{e.createdAt | date: 'd.M.y, h:mm a'}}</td>
                     <td>
-                                     <span class="badge pill bg-success">
-                                             LOGIN_ATTEMPT_SUCCESS
-                                     </span>
+                     <span class="badge pill {{  getBgClassByEventType(e.type) }}">
+                       {{ e.type }}
+                     </span>
                     </td>
-                    <td>You logged in successfully</td>
+                    <td>{{e.description}}</td>
                     <td>
                       <button type="button" class="btn btn-sm" style="background-color: #fd5d0d; font-weight: 450;">
                         Report
@@ -346,7 +363,7 @@
 
 <!-- profile image change form -->
 <form enctype="multipart/form-data" style="display:none;">
-  <input type="file" name="image" id="image"
+  <input #fileInput (change)="updateImage($event.target.files[0])" type="file" name="image" id="image"
          placeholder="file" ngModel accept="image/*"/>
 </form>
 

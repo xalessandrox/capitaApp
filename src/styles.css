@@ -5,13 +5,19 @@
   --color-1: hsl(102, 19%, 61%);
   --color-2: hsl(75, 31%, 25%);
   --color-3: hsla(104, 17%, 68%);
-
+  --color-4: rgba(114, 158, 192, 1);
+  --color-5: rgba(90, 134, 168, 1);
 }
 
 body {
-  background: var(--color-1) !important;
+  background: teal !important;
   font-family: Bahnschrift, serif !important;
+  /*font-weight: bold;*/
   font-size: 16px;
+}
+
+nav a {
+  color: darkturquoise;
 }
 
 input {
@@ -19,39 +25,48 @@ input {
 }
 
 .btn {
-  background: var(--color-2) !important;
+  background: var(--color-4);
   width: 100%;
   /*transition: all 5s;*/
 }
 
 .btn:hover {
-  background: var(--color-1) !important;
   /*transition: all 5s;*/
+  background: var(--color-5) !important;
+
 }
 
+table .btn {
+  /*text-transform: full-width uppercase;*/
+  /*font-size: 0.7rem;*/
+  /*letter-spacing: 5px;*/
+}
+
+.tab-content {
+  background: rgba(114, 158, 192, 0.4);
+}
 form {
-  background-color: var(--color-3);
+  border-radius: 5px !important;
   padding: 25px;
+  background-image: radial-gradient(ellipse at 50% 50%, rgba(0, 255, 255, 0.1) 1%, rgba(114, 158, 192, 0.7) 100%);
 }
 
 .card {
-  background-color: var(--color-1) !important;
+  background-image: radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.1) 1%, rgba(114, 158, 192, 1) 100%);
 }
 
-form {
 
-  border-radius: 5px !important;
-}
 
-.profile-tab-nav {
-  background-image: linear-gradient(to left, white, navajowhite);
-}
 .icon-img {
-  background-image: linear-gradient(to left, red, blue, green, blue,red);
+  background-image: radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 1) 5%, rgba(114, 158, 192, 1) 100%);
+  /*background: var(--color-3);*/
+;
 }
-.tab-content {
-  background-image: linear-gradient(to bottom, teal, seagreen);
+.profile-tab-nav {
+  background: radial-gradient(ellipse at 50% 90%, rgba(255, 255, 255, 1) 5%, rgba(144, 188, 212, 1) 100%);
+
 }
+
 
 .btn {
   border: 0;

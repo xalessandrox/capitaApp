@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { UserService } from "../../services/user.service";
 import { NgForm } from "@angular/forms";
@@ -12,7 +12,7 @@ import { Key } from "../../enums/key.enum";
   templateUrl : './login.component.html',
   styleUrls : [ './login.component.css' ]
 } )
-export class LoginComponent {
+export class LoginComponent implements OnInit {
 
   loginState$: Observable<LoginState> = of( { dataState : DataState.Loaded } );
 
@@ -21,6 +21,12 @@ export class LoginComponent {
   private phoneSubject = new BehaviorSubject<string | null>( null );
 
   constructor( private router: Router, private userService: UserService ) {
+  }
+
+  ngOnInit() {
+
+    this.userService.isAuthenticated() ? this.router.navigate(['/']) : null;
+
   }
 
   login( loginForm: NgForm ): void {
@@ -35,7 +41,7 @@ export class LoginComponent {
             email : response.data.user.email
           };
         } else {
-          localStorage.setItem( Key.Token, response.data.access_token );
+          localStorage.setItem( Key.AccessToken, response.data.access_token );
           localStorage.setItem( Key.RefreshToken, response.data.refresh_token );
           this.router.navigate( [ '/' ] );
           return {
@@ -59,7 +65,7 @@ export class LoginComponent {
   verifyCode( verifyCodeForm: NgForm ): void {
     this.loginState$ = this.userService.verifyCode$( this.emailSubject.value, verifyCodeForm.value.verificationCode )
     .pipe( map( response => {
-        localStorage.setItem( Key.Token, response.data!.access_token );
+        localStorage.setItem( Key.AccessToken, response.data!.access_token );
         localStorage.setItem( Key.RefreshToken, response.data!.refresh_token );
         this.router.navigate( [ '/' ] );
         return {

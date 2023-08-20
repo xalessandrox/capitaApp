@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { catchError, Observable, tap, throwError } from "rxjs";
+import {JwtHelperService} from "@auth0/angular-jwt";
 import { CustomHttpResponse, Profile } from "../interfaces/appStates";
 import { User } from "../interfaces/user";
 import { Key } from "../enums/key.enum";
@@ -11,7 +12,7 @@ import { Key } from "../enums/key.enum";
 export class UserService {
 
   private readonly server: string = 'http://localhost:8080';
-
+  private jwtHelper = new JwtHelperService();
   constructor( private httpClient: HttpClient ) {
   }
 
@@ -54,9 +55,9 @@ export class UserService {
     } )
     .pipe(
       tap( response => {
-        localStorage.removeItem( Key.Token )
+        localStorage.removeItem( Key.AccessToken )
         localStorage.removeItem( Key.RefreshToken )
-        localStorage.setItem( Key.Token, response.data.access_token )
+        localStorage.setItem( Key.AccessToken, response.data.access_token )
         localStorage.setItem( Key.RefreshToken, response.data.refresh_token )
         console.log( response );
       } ),
@@ -77,33 +78,59 @@ export class UserService {
 
   updateRole$ = ( roleName: string ) => <Observable<CustomHttpResponse<Profile>>>
     this.httpClient.patch<CustomHttpResponse<Profile>>
-    ( `${ this.server }/user/update/role/${roleName}`, {})
+    ( `${ this.server }/user/update/role/${ roleName }`, {} )
     .pipe(
       tap( console.log ),
       catchError( this.handleError )
     );
 
-  updateAccountSettings$ = ( settingsForm: {enabled:boolean, notLocked:boolean} ) => <Observable<CustomHttpResponse<Profile>>>
+  updateAccountSettings$ = ( settingsForm: {
+    enabled: boolean,
+    notLocked: boolean
+  } ) => <Observable<CustomHttpResponse<Profile>>>
     this.httpClient.patch<CustomHttpResponse<Profile>>
-    ( `${ this.server }/user/update/settings`, settingsForm)
+    ( `${ this.server }/user/update/settings`, settingsForm )
     .pipe(
       tap( console.log ),
       catchError( this.handleError )
     );
 
-  private handleError( error: HttpErrorResponse ): Observable<never> {
-    console.log( error );
+  updateUsingMfa$ = () => <Observable<CustomHttpResponse<Profile>>>
+    this.httpClient.patch<CustomHttpResponse<Profile>>
+    ( `${ this.server }/user/update/usingMfa`, {} )
+    .pipe(
+      tap( console.log ),
+      catchError( this.handleError )
+    );
+
+  updateImage$ = ( formData: FormData ) => <Observable<CustomHttpResponse<Profile>>>
+    this.httpClient.patch<CustomHttpResponse<Profile>>
+    ( `${ this.server }/user/update/image`, formData )
+    .pipe(
+      tap( console.log ),
+      catchError( this.handleError )
+    );
+
+  private handleError( response: HttpErrorResponse ): Observable<never> {
+    console.log( response );
     let errorMessage: string;
-    if (error.error instanceof ErrorEvent) {
-      errorMessage = `A client error occurred - ${ error.error.message }`;
+    if (response.error instanceof ErrorEvent) {
+      errorMessage = `A client error occurred - ${ response.error.message }`;
     } else {
-      if (error.error.reason) {
-        errorMessage = error.error.reason;
+      if (response.error.reason) {
+        errorMessage = response.error.reason;
         console.log( errorMessage );
       } else {
-        errorMessage = `An error occurred - Error status ${ error.status }`;
+        errorMessage = `An error occurred - Error status ${ response.status }`;
       }
     }
     return throwError( () => errorMessage );
+  }
+
+  isAuthenticated = () : boolean => !this.jwtHelper.isTokenExpired(localStorage.getItem(Key.RefreshToken));
+
+  logOut() {
+    localStorage.removeItem( Key.AccessToken );
+    localStorage.removeItem( Key.RefreshToken );
   }
 }

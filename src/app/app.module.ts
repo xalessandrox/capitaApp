@@ -10,14 +10,18 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { VerifyComponent } from './components/verify/verify.component';
 import { ResetPasswordComponent } from './components/reset-password/reset-password.component';
-import { HomeComponent } from './home/home.component';
+import { HomeComponent } from './components/home/home.component';
 import { CustomerComponent } from './components/customer/customer.component';
 import { ProfileComponent } from './components/profile/profile.component';
 import { CustomersComponent } from './components/customers/customers.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
-import { StatsComponent } from './components/stats/stats.component';
+import { StatisticsComponent } from './components/statistics/statistics.component';
 import { NgOptimizedImage } from "@angular/common";
 import { TokenInterceptor } from "./interceptors/token.interceptor";
+import { NewCustomerComponent } from './components/new-customer/new-customer.component';
+import { NewInvoiceComponent } from './components/new-invoice/new-invoice.component';
+import { InvoicesComponent } from './components/invoices/invoices.component';
+import { InvoiceComponent } from './components/invoice/invoice.component';
 
 @NgModule( {
   declarations : [
@@ -31,7 +35,11 @@ import { TokenInterceptor } from "./interceptors/token.interceptor";
     ProfileComponent,
     CustomersComponent,
     NavbarComponent,
-    StatsComponent
+    StatisticsComponent,
+    NewCustomerComponent,
+    NewInvoiceComponent,
+    InvoicesComponent,
+    InvoiceComponent
   ],
   imports : [
     BrowserModule,

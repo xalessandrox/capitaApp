@@ -77,3 +77,12 @@ a#notification.nav-link.active {
   /* color: #AAA; */
   background: #F5F5F5;
 }
+
+input.nos {
+  /*-webkit-touch-callout: none; !* iOS Safari *!*/
+  /*-webkit-user-select: none; !* Safari *!*/
+  /*-khtml-user-select: none; !* Konqueror HTML *!*/
+  /*-moz-user-select: none; !* Firefox *!*/
+  /*-ms-user-select: none; !* Internet Explorer/Edge *!*/
+  /*user-select: none;*/
+}

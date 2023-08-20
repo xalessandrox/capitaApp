@@ -2,6 +2,7 @@ import { DataState } from "../enums/dataState.enum";
 import { User } from "./user";
 import { Events } from "./event";
 import { Role } from "./role";
+import { Customer } from "./customer";
 
 export interface LoginState {
   dataState: DataState;
@@ -27,6 +28,20 @@ export interface Profile {
   user: User;
   events?: Events[];
   roles?: Role[];
-  access_token: string;
-  refresh_token: string;
+  access_token?: string;
+  refresh_token?: string;
+}
+
+export interface Page<T> {
+  content: T[];
+  totalPages: number;
+  totalElements: number;
+  numberOfElements: number;
+  size: number;
+  number: number;
+}
+
+export interface CustomerState {
+  user: User,
+  customer: Customer
 }
