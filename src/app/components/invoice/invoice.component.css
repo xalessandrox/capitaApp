@@ -1,8 +1,21 @@
 @media print
 {
+    @page {
+        size: A4;
+        margin: 0mm;
+    }
   html, body {
     overflow: hidden !important;
+    background-color: transparent !important;
   }
+    section {
+      width: 100vw !important;
+    }
+    .card {
+        box-shadow: none !important;
+        -moz-box-shadow: none !important;
+        border-top: 30px solid transparent !important;
+    }
 }
 
 .card {
@@ -36,3 +49,15 @@
   border: 0;
 }
 
+i {
+
+    /*color: ghostwhite;*/
+}
+
+p {
+    font-size: 0.8rem;
+}
+
+.invoice-title {
+    color: #3d4f5d;
+}

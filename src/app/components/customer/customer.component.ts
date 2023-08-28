@@ -23,7 +23,7 @@ export class CustomerComponent implements OnInit {
   isLoading$ = this.isLoadingSubject.asObservable();
 
 
-  constructor( private activatedRoute: ActivatedRoute, private customerService: CustomerService, private elRef: ElementRef ) {
+  constructor( private activatedRoute: ActivatedRoute, private customerService: CustomerService) {
   }
 
   ngOnInit(): void {
@@ -75,4 +75,5 @@ export class CustomerComponent implements OnInit {
       } )
     )
   }
+
 }

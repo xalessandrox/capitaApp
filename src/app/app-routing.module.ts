@@ -29,7 +29,7 @@ const routes: Routes = [
   { path : 'invoices/:invoiceId', component : InvoiceComponent, canActivate : [ AuthenticationGuard ] },
   { path : '', component : HomeComponent, canActivate : [ AuthenticationGuard ] },
   { path : '', redirectTo : '/', pathMatch : 'full' },
-  { path : '**', component : HomeComponent },
+  { path : '**', component : HomeComponent, canActivate : [ AuthenticationGuard ] },
 ];
 
 @NgModule( {

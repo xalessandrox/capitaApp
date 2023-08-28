@@ -5,21 +5,19 @@ import { CustomHttpResponse, Page } from "../interfaces/appStates";
 import { User } from "../interfaces/user";
 import { Customer } from "../interfaces/customer";
 import { Invoice } from "../interfaces/invoice";
-
+import { environment } from "../../environments/environment";
 @Injectable( {
   providedIn : 'root'
 } )
 
 export class InvoiceService {
 
-  private readonly server: string = 'http://localhost:8080';
-
   constructor( private httpClient: HttpClient ) {
   }
 
   newInvoice$ = () => <Observable<CustomHttpResponse<Customer[] & User>>>
     this.httpClient.get<CustomHttpResponse<Customer[] & User>>
-    ( `${ this.server }/invoices/new` )
+    ( `${ environment.server }/invoices/new` )
     .pipe(
       tap( console.log ),
       catchError( this.handleError )
@@ -27,7 +25,7 @@ export class InvoiceService {
 
   createInvoice$ = ( customerId: number, invoice: Invoice ) => <Observable<CustomHttpResponse<Customer[] & User>>>
     this.httpClient.post<CustomHttpResponse<Customer[] & User>>
-    ( `${ this.server }/invoices/addCustomer/${ customerId }`, invoice )
+    ( `${ environment.server }/invoices/addCustomer/${ customerId }`, invoice )
     .pipe(
       tap( console.log ),
       catchError( this.handleError )
@@ -35,7 +33,7 @@ export class InvoiceService {
 
   invoices$ = ( page: number = 0 ) => <Observable<CustomHttpResponse<Page<Invoice> & User>>>
     this.httpClient.get<CustomHttpResponse<Page<Invoice> & User>>
-    ( `${ this.server }/invoices/list/paged?page=${ page }` )
+    ( `${ environment.server }/invoices/list/paged?page=${ page }` )
     .pipe(
       tap( console.log ),
       catchError( this.handleError )
@@ -43,7 +41,7 @@ export class InvoiceService {
 
   invoice$ = ( id: number ) => <Observable<CustomHttpResponse<Customer & Invoice & User>>>
     this.httpClient.get<CustomHttpResponse<Customer & Invoice & User>>
-    ( `${ this.server }/invoices/${id}` )
+    ( `${ environment.server }/invoices/${id}` )
     .pipe(
       tap( console.log ),
       catchError( this.handleError )

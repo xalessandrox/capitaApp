@@ -59,7 +59,7 @@
                 <ul class="list-group">
                   <li class="list-group-item d-flex-justify-content-between align-items-center" style="font-size: 20px">
                     Total billed
-                    <span class="float-end">€ {{ state?.appData?.data?.customer.invoices?.length }}</span>
+                    <span class="float-end">€ {{ state?.appData?.data?.customer.invoices | sumArray }}</span>
                   </li>
                 </ul>
               </div>

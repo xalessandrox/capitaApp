@@ -15,7 +15,7 @@
         <div class="row mt-3">
 
           <div class="col">
-            <h4 class="fw-bold text-start">Invoices</h4>
+            <h4 class="fw-bold text-start">{{ state?.appData?.data?.page?.totalElements }} invoices found</h4>
           </div>
           <div class="col">
             <h4 class="fw-bold text-end"><i style="cursor: pointer;color: green;font-size: 30px;"
@@ -35,7 +35,7 @@
               </tr>
               </thead>
               <tbody>
-              <tr *ngFor="let invoice of state?.appData?.data?.invoices?.content">
+              <tr *ngFor="let invoice of state?.appData?.data?.page?.content">
                 <th scope="row">{{ invoice.invoiceNumber }}</th>
                 <td>{{ invoice.services }}</td>
                 <td><span class="badge" [ngClass]="[
@@ -55,25 +55,13 @@
               </tbody>
             </table>
 
-            <nav *ngIf="state?.appData?.data?.invoices?.content?.length > 0" aria-label="Page navigation example">
-              <ul class="pagination justify-content-end">
-                <li [ngClass]="0 == (currentPage$ | async) ? ' disabled' : ''" class="page-item pointer">
-                  <a (click)="goToNextOrPreviousPage('backward')" class="page-link">&laquo; Prev</a>
-                </li>
-                <li
-                  *ngFor="let pageNumber of [].constructor(state?.appData?.data?.invoices?.totalPages); let i = index;"
-                  class="page-item pointer">
-                  <a (click)="goToPage(i)" [ngClass]="i == (currentPage$ | async) ? ' active' : ''" class="page-link">
-                    {{ i + 1 }}
-                  </a>
-                </li>
-                <li
-                  [ngClass]="(state?.appData?.data?.invoices?.totalPages - 1) == (currentPage$ | async) ? ' disabled' : ''"
-                  class="page-item pointer">
-                  <a (click)="goToNextOrPreviousPage('forward')" class="page-link">Next &raquo;</a>
-                </li>
-              </ul>
-            </nav>
+            <app-pagination
+                *ngIf="state?.appData?.data?.page?.totalPages > environment.navPaginationRange"
+                (pageRequest)="goToPage($event)"
+                [dataSubject]="dataSubject"
+                [currentPage$]="currentPage$"
+                [currentPageSubject]="currentPageSubject">
+            </app-pagination>
           </div>
         </div>
       </div>

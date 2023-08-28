@@ -22,9 +22,13 @@ import { NewCustomerComponent } from './components/new-customer/new-customer.com
 import { NewInvoiceComponent } from './components/new-invoice/new-invoice.component';
 import { InvoicesComponent } from './components/invoices/invoices.component';
 import { InvoiceComponent } from './components/invoice/invoice.component';
+import { SumArrayPipe } from './pipes/sum-array.pipe';
+import { CacheInterceptor } from "./interceptors/cache.interceptor";
+import { PaginationComponent } from "./components/utils/pagination/pagination.component";
 
 @NgModule( {
   declarations : [
+    SumArrayPipe,
     AppComponent,
     LoginComponent,
     RegisterComponent,
@@ -39,7 +43,8 @@ import { InvoiceComponent } from './components/invoice/invoice.component';
     NewCustomerComponent,
     NewInvoiceComponent,
     InvoicesComponent,
-    InvoiceComponent
+    InvoiceComponent,
+    PaginationComponent
   ],
   imports : [
     BrowserModule,
@@ -48,7 +53,8 @@ import { InvoiceComponent } from './components/invoice/invoice.component';
     FormsModule,
     NgOptimizedImage
   ],
-  providers : [ { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true } ],
+  providers : [ { provide: HTTP_INTERCEPTORS, useClass: TokenInterceptor, multi: true },
+                { provide: HTTP_INTERCEPTORS, useClass: CacheInterceptor, multi: true } ],
   bootstrap : [ AppComponent ]
 } )
 export class AppModule {

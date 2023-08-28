@@ -33,15 +33,30 @@ export interface Profile {
 }
 
 export interface Page<T> {
-  content: T[];
-  totalPages: number;
-  totalElements: number;
-  numberOfElements: number;
-  size: number;
-  number: number;
+  content?: T[];
+  totalPages?: number;
+  totalElements?: number;
+  numberOfElements?: number;
+  size?: number;
+  number?: number;
+}
+
+export interface PageContent {
+  totalPages?: number;
+  totalElements?: number;
+  numberOfElements?: number;
+  size?: number;
+  number?: number;
 }
 
 export interface CustomerState {
   user: User,
   customer: Customer
+}
+
+export interface RegisterState {
+  dataState: DataState,
+  registerSuccess?: boolean,
+  error?: string,
+  message?: string
 }

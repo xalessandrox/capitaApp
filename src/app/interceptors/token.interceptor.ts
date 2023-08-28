@@ -12,11 +12,11 @@ import { Key } from "../enums/key.enum";
 import { error } from "@angular/compiler-cli/src/transformers/util";
 import { UserService } from "../services/user.service";
 import { CustomHttpResponse, Profile } from "../interfaces/appStates";
+import { environment } from "../../environments/environment";
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
 
-  readonly PUBLIC_URLS = [ 'verify', 'login', 'register', 'refresh', 'resetPassword' ];
   private isTokenRefreshing: boolean = false;
   private refreshTokenSubject: BehaviorSubject<CustomHttpResponse<Profile>> = new BehaviorSubject( null );
 
@@ -25,13 +25,13 @@ export class TokenInterceptor implements HttpInterceptor {
 
   intercept( request: HttpRequest<unknown>, next: HttpHandler ): Observable<HttpEvent<unknown>> | Observable<HttpResponse<unknown>>|any {
 
-    if (request.url.includes( 'verify' )
-      || request.url.includes( 'login' )
-      || request.url.includes( 'register' )
-      || request.url.includes( 'refresh' )
-      || request.url.includes( 'resetPassword' )) {
-      return next.handle( request );
+    for (let i = 0; i < environment.PUBLIC_URLS.length; i++) {
+      if (request.url.includes( environment.PUBLIC_URLS[i] )) {
+        return next.handle( request );
+      }
     }
+
+
     return next.handle( this.addAuthorizationTokenHeader( request, localStorage.getItem( Key.AccessToken ) ) )
     .pipe(
       catchError( ( response: HttpErrorResponse ) => {

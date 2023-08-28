@@ -2,114 +2,118 @@
 @import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.2/font/bootstrap-icons.css');
 
 :root {
-  --color-1: hsl(102, 19%, 61%);
-  --color-2: hsl(75, 31%, 25%);
-  --color-3: hsla(104, 17%, 68%);
-  --color-4: rgba(114, 158, 192, 1);
-  --color-5: rgba(90, 134, 168, 1);
+    --color-1: hsl(102, 19%, 61%);
+    --color-2: hsl(75, 31%, 25%);
+    --color-3: hsla(104, 17%, 68%);
+    --theme-primary: rgba(134, 178, 212, 1);
+    --color-5: rgba(90, 134, 168, 1);
+    --bg-main: rgba(60, 104, 138, 1);
+    --bg-radial-form: radial-gradient(ellipse at 50% 50%, rgba(0, 255, 255, 0.3) 1%, rgba(var(--theme-primary), 0.7)) !important;
+    --bg-radial-card: radial-gradient(ellipse at 50% 90%, rgba(255, 255, 255, 0.3) 1%, var(--theme-primary) 100%);
+    --bg-profile-tab-nav: radial-gradient(ellipse at 50% 95%, rgba(255, 255, 255, 1) 1%, rgba(124, 168, 192, 1) 100%);
 }
 
 body {
-  background: teal !important;
-  font-family: Bahnschrift, serif !important;
-  /*font-weight: bold;*/
-  font-size: 16px;
+    background: var(--bg-main) !important;
+    font-family: Bahnschrift, serif !important;
+    font-size: 16px;
 }
 
 nav a {
-  color: darkturquoise;
+    color: darkturquoise;
 }
 
 input {
-  /*background-color: var(--color-1) !important;*/
+    /*background-color: var(--color-1) !important;*/
 }
 
 .btn {
-  background: var(--color-4);
-  width: 100%;
-  /*transition: all 5s;*/
+    background: var(--theme-primary);
+    width: 100%;
 }
 
 .btn:hover {
-  /*transition: all 5s;*/
-  background: var(--color-5) !important;
+    background: var(--color-5) !important;
 
 }
 
 table .btn {
-  /*text-transform: full-width uppercase;*/
-  /*font-size: 0.7rem;*/
-  /*letter-spacing: 5px;*/
+    /*text-transform: full-width uppercase;*/
+    /*font-size: 0.7rem;*/
+    /*letter-spacing: 5px;*/
 }
 
 .tab-content {
-  background: rgba(114, 158, 192, 0.4);
+    background: rgba(114, 158, 192, 0.4);
 }
+
 form {
-  border-radius: 5px !important;
-  padding: 25px;
-  background-image: radial-gradient(ellipse at 50% 50%, rgba(0, 255, 255, 0.1) 1%, rgba(114, 158, 192, 0.7) 100%);
+    border-radius: 5px !important;
+    padding: 25px;
+    background-image: var(--bg-radial-form);
 }
 
 .card {
-  background-image: radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 0.1) 1%, rgba(114, 158, 192, 1) 100%);
+    background-image: var(--bg-radial-card);
 }
-
 
 
 .icon-img {
-  background-image: radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 1) 5%, rgba(114, 158, 192, 1) 100%);
-  /*background: var(--color-3);*/
-;
+    background-image: radial-gradient(ellipse at 50% 50%, rgba(255, 255, 255, 1) 5%, rgba(114, 158, 192, 1) 100%);
+    /*background: var(--color-3);*/;
 }
+
 .profile-tab-nav {
-  background: radial-gradient(ellipse at 50% 90%, rgba(255, 255, 255, 1) 5%, rgba(144, 188, 212, 1) 100%);
+    background: var(--bg-profile-tab-nav)
 
 }
-
 
 .btn {
-  border: 0;
-  box-shadow: 0px 0px 1px 0.01ch navajowhite;
+    border: 0;
+    box-shadow: 0px 0px 1px 0.01ch navajowhite;
 }
 
 .disabled {
-  pointer-events:none;
-  opacity:0.6;
+    pointer-events: none;
+    opacity: 0.6;
 }
 
 .pointer {
-  cursor: pointer;
+    cursor: pointer;
 }
+
 /*---- User icon sizes ---*/
 
 .user-avatar-xxl {
-  height: 128px;
-  width: 128px;
+    height: 128px;
+    width: 128px;
 }
 
 .user-avatar-xl {
-  height: 90px;
-  width: 90px;
+    height: 90px;
+    width: 90px;
 }
 
 .user-avatar-lg {
-  height: 48px;
-  width: 48px;
+    height: 48px;
+    width: 48px;
 }
 
 .user-avatar-md {
-  height: 32px;
-  width: 32px;
+    height: 32px;
+    width: 32px;
 }
 
 .user-avatar-sm {
-  height: 24px;
-  width: 24px;
+    height: 24px;
+    width: 24px;
 }
 
 .user-avatar-xs {
-  height: 18px;
-  width: 18px;
+    height: 18px;
+    width: 18px;
 }
 
+.pagination li a, .pagination li span {
+    display: inline !important;
+}

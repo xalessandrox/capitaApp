@@ -1,0 +1,34 @@
+<nav aria-label="Page navigation example">
+  <ul class="pagination justify-content-end">
+
+    <li [ngClass]="0 == (currentPage$ | async) ? ' disabled' : ''" class="page-item pointer">
+      <a (click)="goToNextOrPreviousPage('backward', lastName)" class="page-link">&laquo; Prev</a>
+    </li>
+
+    <li *ngFor="let page of range; let idx = index" class="page-item pointer">
+
+      <a *ngIf="idx == 0 && page != 0"
+         (click)="goToPage(lastName, currentPageSubject - environment.navPaginationRange);"
+         class="page-link">
+        <i class="bi bi-arrow-bar-left"></i>
+      </a>
+
+      <a *ngIf="page < totalPages && idx < range.length" (click)="goToPage(lastName, page);"
+         [ngClass]="page == (currentPage$ | async) ? ' active' : ''" class="page-link">
+        {{ page + 1 }}
+      </a>
+      <a *ngIf="idx == range.length - 1 && page + 1 != totalPages"
+         (click)="goToPage( lastName, currentPageSubject + environment.navPaginationRange)"
+         class="page-link">
+        <i class="bi bi-arrow-bar-right"></i>
+      </a>
+
+    </li>
+
+    <li [ngClass]="(totalPages - 1) == (currentPage$ | async) ? ' disabled' : ''"
+        class="page-item pointer">
+      <a (click)="goToNextOrPreviousPage('forward', lastName)" class="page-link">Next &raquo;</a>
+    </li>
+
+  </ul>
+</nav>
